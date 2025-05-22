@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5053:5053"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=audio_to_tone.settings
+    volumes:
+      - .:/app
+    restart: unless-stopped 
