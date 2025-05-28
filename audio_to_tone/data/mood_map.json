@@ -1,0 +1,16 @@
+{
+  "laughter": "Cheerful",
+  "speech": "Neutral",
+  "crying": "Sad",
+  "screaming": "Furious",
+  "whispering": "Introspective",
+  "aggressive": "Assertive",
+  "heavy metal": "Brutal",
+  "rock music": "Energetic",
+  "relaxing": "Calm",
+  "pop music": "Carefree",
+  "hip hop music": "Confident",
+  "electronic music": "Danceable",
+  "jazz": "Complex",
+  "classical music": "Majestic"
+}

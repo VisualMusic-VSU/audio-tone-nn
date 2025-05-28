@@ -1,0 +1,121 @@
+{
+  "rock": {
+    "description": "Rock music",
+    "subgenres": {
+      "Alternative Rock": ["Alternative rock with energetic and experimental sounds"],
+      "Hard Rock": ["Heavy and aggressive rock style"],
+      "Punk Rock": ["Fast-paced rock with rebellious lyrics"],
+      "Indie Rock": ["Independent rock with diverse influences"],
+      "Classic Rock": ["Traditional rock style from 60s-70s"]
+    }
+  },
+  "pop": {
+    "description": "Popular music",
+    "subgenres": {
+      "Electropop": ["Pop music with electronic influences"],
+      "Synthpop": ["Pop music dominated by synthesizers"],
+      "Dance Pop": ["Upbeat pop designed for dancing"],
+      "Indie Pop": ["Independent pop with melodic sounds"],
+      "Teen Pop": ["Pop music targeting teen audience"]
+    }
+  },
+  "hip hop": {
+    "description": "Hip hop music",
+    "subgenres": {
+      "Trap": ["Hip hop style with heavy bass and hi-hats"],
+      "Boom Bap": ["Old-school hip hop with hard beats"],
+      "Lo-fi": ["Relaxed, low fidelity hip hop beats"],
+      "Gangsta Rap": ["Rap with street and gangster themes"],
+      "Conscious Hip Hop": ["Lyrical rap with social themes"]
+    }
+  },
+  "electronic": {
+    "description": "Electronic music",
+    "subgenres": {
+      "House": ["Dance music with steady four-on-the-floor beat"],
+      "Techno": ["Electronic music with repetitive rhythms"],
+      "Trance": ["Electronic music with melodic and uplifting sounds"],
+      "Drum and Bass": ["Fast breakbeats with heavy bass lines"],
+      "Dubstep": ["Bass-heavy electronic dance music"]
+    }
+  },
+  "jazz": {
+    "description": "Jazz music",
+    "subgenres": {
+      "Bebop": ["Fast tempo jazz with complex chord changes"],
+      "Cool Jazz": ["Relaxed style of jazz with softer tones"],
+      "Swing": ["Jazz with strong rhythm suitable for dancing"],
+      "Free Jazz": ["Avant-garde jazz with free improvisation"],
+      "Fusion": ["Mix of jazz with rock, funk, and R&B"]
+    }
+  },
+  "classical": {
+    "description": "Classical music",
+    "subgenres": {
+      "Baroque": ["Highly ornamented music from 1600-1750"],
+      "Romantic": ["Expressive music from 19th century"],
+      "Modern Classical": ["Contemporary classical compositions"],
+      "Renaissance": ["Music from 1400-1600 with modal harmony"],
+      "Minimalism": ["Music with repetitive structures"]
+    }
+  },
+  "metal": {
+    "description": "Metal music",
+    "subgenres": {
+      "Black Metal": ["Extreme metal with fast tempos and shrieked vocals"],
+      "Death Metal": ["Heavy metal with growled vocals and distorted guitars"],
+      "Nu Metal": ["Fusion of metal with other genres like hip hop"],
+      "Thrash Metal": ["Fast and aggressive metal"],
+      "Power Metal": ["Metal with epic themes and melodic vocals"]
+    }
+  },
+  "reggae": {
+    "description": "Reggae music",
+    "subgenres": {
+      "Dub": ["Remix style with heavy use of effects"],
+      "Dancehall": ["Upbeat reggae with digital instrumentation"],
+      "Roots Reggae": ["Original reggae style with spiritual themes"],
+      "Ska": ["Early form of reggae with upbeat rhythms"],
+      "Rocksteady": ["Predecessor to reggae with slower tempo"]
+    }
+  },
+  "blues": {
+    "description": "Blues music",
+    "subgenres": {
+      "Delta Blues": ["Acoustic blues from Mississippi Delta"],
+      "Electric Blues": ["Blues with electric guitar and band"],
+      "Chicago Blues": ["Urban blues with amplified instruments"],
+      "Country Blues": ["Early blues with simple guitar"],
+      "Soul Blues": ["Blues combined with soul music"]
+    }
+  },
+  "indie": {
+    "description": "Independent music",
+    "subgenres": {
+      "Indie Rock": ["Rock music from independent labels"],
+      "Indie Pop": ["Pop music from independent artists"],
+      "Indietronica": ["Indie with electronic music elements"],
+      "Indie Folk": ["Folk music with indie sensibilities"]
+    }
+  },
+  "world": {
+    "description": "World music",
+    "subgenres": {
+      "Afrobeat": ["West African music combining jazz, funk, and traditional music"],
+      "Balkan": ["Music from Balkan peninsula with folk influences"],
+      "Cumbia": ["Latin American dance music"],
+      "Flamenco": ["Spanish folk music with guitar and singing"],
+      "Klezmer": ["Eastern European Jewish folk music"]
+    }
+  },
+  "experimental": {
+    "description": "Experimental music",
+    "subgenres": {
+      "Ambient": ["Atmospheric, mood-setting music"],
+      "Noise": ["Music using noise and atonal sounds"],
+      "Glitch": ["Electronic music with digital artifacts"],
+      "Drone": ["Sustained or repeated sounds"],
+      "Avant-garde": ["Innovative and unconventional music"]
+    }
+  }
+}
