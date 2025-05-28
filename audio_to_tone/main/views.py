@@ -60,7 +60,7 @@ def interpret_genre(scores, max_genres):
     # Сортируем поджанры по убыванию похожести
     scored_subgenres.sort(key=lambda x: x[1], reverse=True)
 
-    # Добавляем только уникальные названия, максимум 5
+    # Добавляем только уникальные названия
     best_subgenres = []
     seen = set()
     for name, _ in scored_subgenres:
@@ -113,13 +113,9 @@ class AudioAnalysisAPI(APIView):
                     f.write(chunk)
 
             scores = predict_audio(filepath)
-            genres = interpret_genre(scores, 7)
+            genres = interpret_genre(scores, 5)
             mood = interpret_mood(scores)
 
-            # response_data = {
-            #     "mood": mood,
-            #     "genres": top_classes
-            # }
             response_data = {
                 "mood": mood,
                 "genres": genres,
