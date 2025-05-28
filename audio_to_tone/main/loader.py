@@ -25,7 +25,7 @@ def load_json(path):
     return genre_map_extended
 
 
-YAMNET_MODEL = tensorflow.saved_model.load('./data/yamnet_model')
+YAMNET_MODEL = tensorflow.saved_model.load(os.path.join(os.path.dirname(__file__), '../data/yamnet_model'))
 NLP_MODEL = SentenceTransformer('all-MiniLM-L6-v2', device='cuda')
 
 CLASS_MAP = load_class_map()

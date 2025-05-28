@@ -25,7 +25,11 @@ SECRET_KEY = "django-insecure-i^8lu$k9tf!a78o$oory3zgl9j%(_j%uwcb$@0ziv-#!98x+op
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'nn.tone.visual-music.ru',
+    'localhost',
+    '127.0.0.1',
+]
 
 
 # Application definition
