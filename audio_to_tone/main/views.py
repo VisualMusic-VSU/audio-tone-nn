@@ -13,6 +13,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .loader import YAMNET_MODEL, NLP_MODEL, CLASS_MAP, GENRE_MAP, MOOD_MAP
 from .serializers import AudioFileSerializer
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 
 def load_yamnet_model():
     print("Загружаю модель YAMNet...")
@@ -97,6 +100,18 @@ def interpret_mood(scores):
 class AudioAnalysisAPI(APIView):
     parser_classes = (MultiPartParser, FormParser)
 
+    @swagger_auto_schema(
+        operation_description="Анализирует аудио файл и возвращает настроение и жанры",
+        request_body=AudioFileSerializer,
+        responses={
+            200: openapi.Response(
+                description="Анализ завершен успешно",
+            ),
+            400: openapi.Response(
+                description="Ошибки в запросе",
+            ),
+        }
+    )
     def post(self, request, *args, **kwargs):
         serializer = AudioFileSerializer(data=request.data)
         if not serializer.is_valid():
