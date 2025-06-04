@@ -11,7 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from sklearn.metrics.pairwise import cosine_similarity
 
-from .loader import YAMNET_MODEL, NLP_MODEL, CLASS_MAP, GENRE_MAP, MOOD_MAP
+from .loader import YAMNET_MODEL, NLP_MODEL, CLASS_MAP, GENRE_MAP, MOOD_MAP, GENRE_MAP_CONVERTER, MOOD_MAP_CONVERTER
 from .serializers import AudioFileSerializer
 
 
@@ -69,7 +69,7 @@ def interpret_genre(scores, max_genres):
     return best_subgenres
 
 
-def interpret_mood(scores):
+def interpret_mood(scores, similarity_threshold=0.7):
     # Получаем топ-5 индексов и классов с наибольшими score
     top_indices = np.argsort(scores)[-5:][::-1]
     top_classes = [CLASS_MAP[i] for i in top_indices]
@@ -159,7 +159,9 @@ class AudioAnalysisAPI(APIView):
 
             response_data = {
                 "mood": mood_to_id(mood),
+                "m": mood,
                 "genres": genres_to_ids(genres),
+                "g": genres
             }
 
             return Response(response_data)
