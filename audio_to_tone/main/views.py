@@ -69,50 +69,25 @@ def interpret_genre(scores, max_genres):
     return best_subgenres
 
 
-def interpret_mood(scores, similarity_threshold=0.7):
-    # Получаем топ-5 индексов и классов с наибольшими score
+def interpret_mood(scores):
+    # Получаем индексы топ-5 классов с наибольшими значениями scores
     top_indices = np.argsort(scores)[-5:][::-1]
     top_classes = [CLASS_MAP[i] for i in top_indices]
-    top_scores = [scores[i] for i in top_indices]
 
-    # Разбираем ключи MOOD_MAP на отдельные синонимы и готовим списки
-    mood_phrases = []
-    mood_labels = []
-    for key, mood in MOOD_MAP.items():
-        synonyms = [phrase.strip() for phrase in key.split(",")]
-        mood_phrases.extend(synonyms)
-        mood_labels.extend([mood] * len(synonyms))
+    # Получаем список ключевых слов для настроений из mood_map (словарь ключ: настроение)
+    mood_keywords = list(MOOD_MAP.keys())
+    mood_embeddings = NLP_MODEL.encode(mood_keywords)
 
-    # Кодируем все фразы настроений
-    mood_embeddings = NLP_MODEL.encode(mood_phrases, convert_to_tensor=False)
-
+    # Сопоставляем настроение
     detected = []
-    for cls, score in zip(top_classes, top_scores):
-        # Разбиваем класс (если содержит синонимы) и усредняем эмбеддинги
-        cls_synonyms = [s.strip() for s in cls.split(",")]
-        cls_embs = NLP_MODEL.encode(cls_synonyms, convert_to_tensor=False)
-        cls_emb = np.mean(cls_embs, axis=0, keepdims=True)
-
-        # Считаем косинусное сходство с каждым из mood_phrases
+    for cls in top_classes:
+        cls_emb = NLP_MODEL.encode([cls])
         similarity = cosine_similarity(cls_emb, mood_embeddings)[0]
-        best_idx = np.argmax(similarity)
+        best_match_index = np.argmax(similarity)
+        detected.append(MOOD_MAP[mood_keywords[best_match_index]])
 
-        if similarity[best_idx] >= similarity_threshold:
-            matched_mood = mood_labels[best_idx]
-            # Взвешиваем по степени уверенности модели (score * similarity)
-            detected.append((matched_mood, similarity[best_idx] * score))
-
-    if detected:
-        # Суммируем веса для каждого настроения
-        mood_scores = {}
-        for mood, weight in detected:
-            mood_scores[mood] = mood_scores.get(mood, 0) + weight
-
-        # Возвращаем настроение с максимальным суммарным весом
-        return max(mood_scores.items(), key=lambda x: x[1])[0]
-    else:
-        # Если совпадений нет — считаем настроение нейтральным
-        return "Neutral"
+    mood = Counter(detected).most_common(1)[0][0] if detected else "Neutral"
+    return mood
 
 
 def genres_to_ids(genres_list):
