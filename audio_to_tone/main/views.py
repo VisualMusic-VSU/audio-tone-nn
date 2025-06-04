@@ -1,10 +1,11 @@
-import os
-import uuid
-from collections import Counter
-
 import librosa
 import numpy as np
+import os
 import tensorflow_hub as hub
+import uuid
+from collections import Counter
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,17 +14,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 from .loader import YAMNET_MODEL, NLP_MODEL, CLASS_MAP, GENRE_MAP, MOOD_MAP
 from .serializers import AudioFileSerializer
 
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-
-
-def load_yamnet_model():
-    print("Загружаю модель YAMNet...")
-    return hub.load("https://tfhub.dev/google/yamnet/1")
-
 
 def predict_audio(audio_path):
-    waveform, sr = librosa.load(audio_path, sr=16000)
+    waveform, _ = librosa.load(audio_path, sr=16000)
     waveform = waveform.astype(np.float32)
     scores, _, _ = YAMNET_MODEL(waveform)
     return np.mean(scores, axis=0)
@@ -77,24 +70,57 @@ def interpret_genre(scores, max_genres):
 
 
 def interpret_mood(scores):
-    # Получаем индексы топ-5 классов с наибольшими значениями scores
+    # Получаем топ-5 индексов и классов с наибольшими score
     top_indices = np.argsort(scores)[-5:][::-1]
     top_classes = [CLASS_MAP[i] for i in top_indices]
+    top_scores = [scores[i] for i in top_indices]
 
-    # Получаем список ключевых слов для настроений из mood_map (словарь ключ: настроение)
-    mood_keywords = list(MOOD_MAP.keys())
-    mood_embeddings = NLP_MODEL.encode(mood_keywords)
+    # Разбираем ключи MOOD_MAP на отдельные синонимы и готовим списки
+    mood_phrases = []
+    mood_labels = []
+    for key, mood in MOOD_MAP.items():
+        synonyms = [phrase.strip() for phrase in key.split(",")]
+        mood_phrases.extend(synonyms)
+        mood_labels.extend([mood] * len(synonyms))
 
-    # Сопоставляем настроение
+    # Кодируем все фразы настроений
+    mood_embeddings = NLP_MODEL.encode(mood_phrases, convert_to_tensor=False)
+
     detected = []
-    for cls in top_classes:
-        cls_emb = NLP_MODEL.encode([cls])
-        similarity = cosine_similarity(cls_emb, mood_embeddings)[0]
-        best_match_index = np.argmax(similarity)
-        detected.append(MOOD_MAP[mood_keywords[best_match_index]])
+    for cls, score in zip(top_classes, top_scores):
+        # Разбиваем класс (если содержит синонимы) и усредняем эмбеддинги
+        cls_synonyms = [s.strip() for s in cls.split(",")]
+        cls_embs = NLP_MODEL.encode(cls_synonyms, convert_to_tensor=False)
+        cls_emb = np.mean(cls_embs, axis=0, keepdims=True)
 
-    mood = Counter(detected).most_common(1)[0][0] if detected else "Indefinite"
-    return mood
+        # Считаем косинусное сходство с каждым из mood_phrases
+        similarity = cosine_similarity(cls_emb, mood_embeddings)[0]
+        best_idx = np.argmax(similarity)
+
+        if similarity[best_idx] >= similarity_threshold:
+            matched_mood = mood_labels[best_idx]
+            # Взвешиваем по степени уверенности модели (score * similarity)
+            detected.append((matched_mood, similarity[best_idx] * score))
+
+    if detected:
+        # Суммируем веса для каждого настроения
+        mood_scores = {}
+        for mood, weight in detected:
+            mood_scores[mood] = mood_scores.get(mood, 0) + weight
+
+        # Возвращаем настроение с максимальным суммарным весом
+        return max(mood_scores.items(), key=lambda x: x[1])[0]
+    else:
+        # Если совпадений нет — считаем настроение нейтральным
+        return "Neutral"
+
+
+def genres_to_ids(genres_list):
+    return [GENRE_MAP_CONVERTER.get(genre, -1) for genre in genres_list]
+
+
+def mood_to_id(mood_str):
+    return MOOD_MAP_CONVERTER.get(mood_str, -1)
 
 
 class AudioAnalysisAPI(APIView):
@@ -132,8 +158,8 @@ class AudioAnalysisAPI(APIView):
             mood = interpret_mood(scores)
 
             response_data = {
-                "mood": mood,
-                "genres": genres,
+                "mood": mood_to_id(mood),
+                "genres": genres_to_ids(genres),
             }
 
             return Response(response_data)
