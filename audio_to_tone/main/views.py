@@ -159,9 +159,7 @@ class AudioAnalysisAPI(APIView):
 
             response_data = {
                 "mood": mood_to_id(mood),
-                "m": mood,
-                "genres": genres_to_ids(genres),
-                "g": genres
+                "genres": genres_to_ids(genres)
             }
 
             return Response(response_data)
